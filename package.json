@@ -1,0 +1,21 @@
+{
+  "name": "meetapp-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/fnoquiq/meetapp-api.git",
+  "author": "Gabriel Mesquita <gabrielteixeiramesquita@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nodemon src/server.js"
+  },
+  "devDependencies": {
+    "eslint": "^6.4.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.0",
+    "nodemon": "^1.19.2",
+    "prettier": "^1.18.2",
+    "sucrase": "^3.10.1"
+  }
+}
