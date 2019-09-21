@@ -105,6 +105,27 @@ class MeetupController {
 
     return res.json(meetups);
   }
+
+  async delete(req, res) {
+    const meetup = await Meetup.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: File,
+          as: 'banner',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
+
+    await meetup.destroy();
+
+    return res.json(meetup);
+  }
 }
 
 export default new MeetupController();
