@@ -122,6 +122,10 @@ class MeetupController {
       ],
     });
 
+    if (meetup.user_id !== req.userId) {
+      return res.status(401).json({ error: "You can't delete this meetup" });
+    }
+
     await meetup.destroy();
 
     return res.json(meetup);
