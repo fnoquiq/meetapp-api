@@ -2,6 +2,8 @@ import { parseISO, isBefore } from 'date-fns';
 import * as Yup from 'yup';
 
 import Meetup from '../models/Meetup';
+import User from '../models/User';
+import File from '../models/File';
 
 class MeetupController {
   async store(req, res) {
@@ -54,7 +56,7 @@ class MeetupController {
 
     if (isBefore(parseISO(date), new Date())) {
       return res.status(401).json({
-        error: 'You can only registrer meetups in a future dates',
+        error: "You can only update meetups that haven't happened yet",
       });
     }
 
@@ -74,6 +76,34 @@ class MeetupController {
     const updatedMeetup = await meetup.update(req.body);
 
     return res.json(updatedMeetup);
+  }
+
+  async index(req, res) {
+    const { page = 1 } = req.query;
+
+    const meetups = await Meetup.findAll({
+      where: {
+        user_id: req.userId,
+      },
+      order: ['date'],
+      attributes: ['id', 'date', 'title', 'description', 'location'],
+      limit: 20,
+      offset: (page - 1) * 20,
+      include: [
+        {
+          model: User,
+          as: 'user',
+          attributes: ['id', 'name'],
+        },
+        {
+          model: File,
+          as: 'banner',
+          attributes: ['id', 'path', 'url'],
+        },
+      ],
+    });
+
+    return res.json(meetups);
   }
 }
 
