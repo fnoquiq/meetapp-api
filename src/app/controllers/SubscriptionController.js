@@ -2,6 +2,10 @@ import { isBefore } from 'date-fns';
 
 import Subscription from '../models/Subscription';
 import Meetup from '../models/Meetup';
+import User from '../models/User';
+import Queue from '../../lib/Queue';
+
+import MeetupMail from '../jobs/MeetupMail';
 
 class SubscriptionController {
   async store(req, res) {
@@ -9,6 +13,7 @@ class SubscriptionController {
     const meetup_id = req.params.meetupId;
 
     const meetup = await Meetup.findByPk(meetup_id);
+    const user = await User.findByPk(user_id);
 
     if (meetup.user_id === user_id) {
       return res
@@ -60,6 +65,12 @@ class SubscriptionController {
     const subscription = await Subscription.create({
       user_id,
       meetup_id,
+    });
+
+    await Queue.add(MeetupMail.key, {
+      subscription,
+      meetup,
+      user,
     });
 
     return res.json(subscription);
