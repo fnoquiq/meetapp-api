@@ -7,8 +7,6 @@ class App {
   constructor() {
     this.server = express();
 
-    this.disable('x-powered-by');
-
     this.middlewares();
     this.routes();
   }
