@@ -22,17 +22,39 @@ class SubscriptionController {
         .json({ error: "You can't subscribe on past meetups" });
     }
 
-    const isSubscribe = await Meetup.findOne({
+    const isSubscribe = await Subscription.findOne({
       where: {
         meetup_id,
         user_id,
       },
     });
 
-    if (isSubscribe !== null) {
+    if (isSubscribe) {
       return res
         .status(400)
         .json({ error: 'You already subscribe this meetup' });
+    }
+
+    const checkDate = await Subscription.findOne({
+      where: {
+        user_id,
+      },
+      include: [
+        {
+          model: Meetup,
+          as: 'meetup',
+          required: true,
+          where: {
+            date: meetup.date,
+          },
+        },
+      ],
+    });
+
+    if (checkDate) {
+      return res
+        .status(400)
+        .json({ error: "You can't subscribe on two meetups at the same day" });
     }
 
     const subscription = await Subscription.create({
