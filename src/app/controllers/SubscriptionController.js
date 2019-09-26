@@ -22,6 +22,19 @@ class SubscriptionController {
         .json({ error: "You can't subscribe on past meetups" });
     }
 
+    const isSubscribe = await Meetup.findOne({
+      where: {
+        meetup_id,
+        user_id,
+      },
+    });
+
+    if (isSubscribe !== null) {
+      return res
+        .status(400)
+        .json({ error: 'You already subscribe this meetup' });
+    }
+
     const subscription = await Subscription.create({
       user_id,
       meetup_id,
